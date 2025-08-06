@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\SendEmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -14,11 +15,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 
-class AuthController extends AbstractController
+class RegistrationController extends AbstractController
 {
 
     #[Route('/api/register', name: 'app_register', methods: 'POST')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer, UserRepository $userRepository): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer, UserRepository $userRepository, sendEmailService $emailService ): Response
     {
         $user = $serializer->deserialize($request->getContent(),User::class, 'json');
 
@@ -34,7 +35,16 @@ class AuthController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->json($user, 201, [], ['groups'=>['user:detail']]);
+        // Envoyer le mail
+        $emailService->send(
+            'noreply@festigo.com',
+            $user->getEmail(),
+            'Activation de votre compte',
+            'register',
+            compact('user')
+        );
+
+        return $this->json(['message'=>'Inscription reussi, un email vous a ete envoye pour confirmer votre compte :)',$user], 201, [], ['groups'=>['user:detail']]);
 
     }
 
