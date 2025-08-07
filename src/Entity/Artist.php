@@ -2,48 +2,39 @@
 
 namespace App\Entity;
 
-use App\Repository\SceneRepository;
+use App\Repository\ArtistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity(repositoryClass: SceneRepository::class)]
-class Scene
+#[ORM\Entity(repositoryClass: ArtistRepository::class)]
+class Artist
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['festival-detail','scene-detail','slot-detail','artist-detail'])]
+    #[Groups(['artist-detail','slot-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['festival-detail','scene-detail','slot-detail','artist-detail'])]
+    #[Groups(['artist-detail','slot-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['scene-detail'])]
+    #[Groups(['artist-detail'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['scene-detail'])]
-    private ?string $gpsCoordinates = null;
-
-    #[ORM\Column]
-    #[Groups(['scene-detail'])]
-    private ?int $capacity = null;
-
-    #[ORM\ManyToOne(inversedBy: 'scenes')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['scene-detail'])]
-    private ?Festival $festival = null;
+    #[Groups(['artist-detail'])]
+    private ?string $nationality = null;
 
     /**
      * @var Collection<int, Slot>
      */
-    #[ORM\OneToMany(targetEntity: Slot::class, mappedBy: 'scene', orphanRemoval: true)]
-    #[Groups(['festival-detail'])]
+    #[ORM\OneToMany(targetEntity: Slot::class, mappedBy: 'artist')]
+    #[Groups(['artist-detail'])]
     private Collection $slots;
 
     public function __construct()
@@ -80,38 +71,14 @@ class Scene
         return $this;
     }
 
-    public function getGpsCoordinates(): ?string
+    public function getNationality(): ?string
     {
-        return $this->gpsCoordinates;
+        return $this->nationality;
     }
 
-    public function setGpsCoordinates(?string $gpsCoordinates): static
+    public function setNationality(?string $nationality): static
     {
-        $this->gpsCoordinates = $gpsCoordinates;
-
-        return $this;
-    }
-
-    public function getCapacity(): ?int
-    {
-        return $this->capacity;
-    }
-
-    public function setCapacity(int $capacity): static
-    {
-        $this->capacity = $capacity;
-
-        return $this;
-    }
-
-    public function getFestival(): ?Festival
-    {
-        return $this->festival;
-    }
-
-    public function setFestival(?Festival $festival): static
-    {
-        $this->festival = $festival;
+        $this->nationality = $nationality;
 
         return $this;
     }
@@ -128,7 +95,7 @@ class Scene
     {
         if (!$this->slots->contains($slot)) {
             $this->slots->add($slot);
-            $slot->setScene($this);
+            $slot->setArtist($this);
         }
 
         return $this;
@@ -138,8 +105,8 @@ class Scene
     {
         if ($this->slots->removeElement($slot)) {
             // set the owning side to null (unless already changed)
-            if ($slot->getScene() === $this) {
-                $slot->setScene(null);
+            if ($slot->getArtist() === $this) {
+                $slot->setArtist(null);
             }
         }
 
