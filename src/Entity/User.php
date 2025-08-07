@@ -36,6 +36,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(type: 'boolean')]
+    #[Groups('user:detail')]
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $verificationToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $verificationTokenExpiresAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -115,5 +125,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getVerificationToken(): ?string
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(?string $verificationToken): static
+    {
+        $this->verificationToken = $verificationToken;
+        return $this;
+    }
+
+    public function getVerificationTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->verificationTokenExpiresAt;
+    }
+
+    public function setVerificationTokenExpiresAt(?\DateTimeInterface $verificationTokenExpiresAt): static
+    {
+        $this->verificationTokenExpiresAt = $verificationTokenExpiresAt;
+        return $this;
     }
 }

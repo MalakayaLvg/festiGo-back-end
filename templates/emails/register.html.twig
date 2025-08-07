@@ -1,11 +1,15 @@
+{# register.html.twig #}
 <h1>Bienvenue {{ user.email }} !</h1>
 
-<p>Votre compte a été créé avec succès.</p>
+<p>Merci de vous être inscrit sur notre plateforme.</p>
 
-<p>Vous pouvez maintenant vous connecter et profiter de nos services.</p>
+<p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
 
-<p>Merci de nous avoir rejoint !</p>
+<a href="{{ verificationUrl }}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+    Activer mon compte
+</a>
 
-<hr>
-<p><small>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</small></p>
+<p>Ce lien expirera dans 24 heures.</p>
 
+<p>Si vous n'arrivez pas à cliquer sur le bouton, copiez et collez ce lien dans votre navigateur :</p>
+<p>{{ verificationUrl }}</p>
