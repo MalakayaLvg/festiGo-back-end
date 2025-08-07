@@ -14,6 +14,6 @@ final class FestivalController extends AbstractController
     public function allFestival(FestivalRepository $festivalRepository): Response
     {
         $festivals = $festivalRepository->findAll();
-        return $this->json($festivals,200);
+        return $this->json($festivals,200,[],['groups'=>'festival-detail']);
     }
 }

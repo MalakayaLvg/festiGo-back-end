@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\FestivalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
@@ -14,34 +17,56 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['festival-detail','scene-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['festival-detail','scene-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['festival-detail'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['festival-detail'])]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['festival-detail'])]
     private ?string $place = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['festival-detail'])]
     private ?int $availablePlaces = null;
 
     #[ORM\Column]
+    #[Groups(['festival-detail'])]
     private ?int $giftCredits = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['festival-detail'])]
     private ?int $visitorLive = null;
 
     #[ORM\Column]
+    #[Groups(['festival-detail'])]
     private ?\DateTime $startDate = null;
 
     #[ORM\Column]
+    #[Groups(['festival-detail'])]
     private ?\DateTime $endDate = null;
+
+    /**
+     * @var Collection<int, Scene>
+     */
+    #[ORM\OneToMany(targetEntity: Scene::class, mappedBy: 'festival', orphanRemoval: true)]
+    #[Groups(['festival-detail'])]
+    private Collection $scenes;
+
+    public function __construct()
+    {
+        $this->scenes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -152,6 +177,36 @@ class Festival
     public function setEndDate(\DateTime $endDate): static
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Scene>
+     */
+    public function getScenes(): Collection
+    {
+        return $this->scenes;
+    }
+
+    public function addScene(Scene $scene): static
+    {
+        if (!$this->scenes->contains($scene)) {
+            $this->scenes->add($scene);
+            $scene->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScene(Scene $scene): static
+    {
+        if ($this->scenes->removeElement($scene)) {
+            // set the owning side to null (unless already changed)
+            if ($scene->getFestival() === $this) {
+                $scene->setFestival(null);
+            }
+        }
 
         return $this;
     }
