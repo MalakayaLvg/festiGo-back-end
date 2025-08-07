@@ -17,11 +17,11 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['festival-detail','scene-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['festival-detail','scene-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -63,9 +63,17 @@ class Festival
     #[Groups(['festival-detail'])]
     private Collection $scenes;
 
+    /**
+     * @var Collection<int, Stand>
+     */
+    #[ORM\OneToMany(targetEntity: Stand::class, mappedBy: 'festival', orphanRemoval: true)]
+    #[Groups(['festival-detail'])]
+    private Collection $stands;
+
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
+        $this->stands = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +213,36 @@ class Festival
             // set the owning side to null (unless already changed)
             if ($scene->getFestival() === $this) {
                 $scene->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stand>
+     */
+    public function getStands(): Collection
+    {
+        return $this->stands;
+    }
+
+    public function addStand(Stand $stand): static
+    {
+        if (!$this->stands->contains($stand)) {
+            $this->stands->add($stand);
+            $stand->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStand(Stand $stand): static
+    {
+        if ($this->stands->removeElement($stand)) {
+            // set the owning side to null (unless already changed)
+            if ($stand->getFestival() === $this) {
+                $stand->setFestival(null);
             }
         }
 

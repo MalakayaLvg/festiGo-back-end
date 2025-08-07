@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Festival;
 use App\Entity\Scene;
+use App\Entity\Stand;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/admin')]
-final class festivalAdminController extends AbstractController
+final class FestivalAdminController extends AbstractController
 {
 
     #[Route('/festival/create', name: 'app_admin_festival_create', methods: 'POST')]
@@ -55,21 +56,18 @@ final class festivalAdminController extends AbstractController
         return $this->json(['message'=>'Scene ajoute au festival',$scene],201,[],['groups'=>'scene-detail']);
     }
 
-    #[Route('/scene/delete/{id}', name: 'app_admin_scene_delete', methods: 'DELETE')]
-    public function deleteScene(Scene $scene, EntityManagerInterface $manager): Response
+    #[Route('/festival/{id}/add/stand', name: 'app_admin_festival_add_stand', methods: 'POST')]
+    public function addStandToFestival(Festival $festival,Request $request, SerializerInterface $serializer, EntityManagerInterface $manager): Response
     {
-        $manager->remove($scene);
+        $stand = $serializer->deserialize($request->getContent(),Stand::class,'json');
+        $stand->setFestival($festival);
+        $manager->persist($stand);
         $manager->flush();
 
-        return $this->json(['message'=>'scene supprime'],200);
+        return $this->json(['message'=>'Stand cree',$stand],200,[],['groups'=>'stand-detail']);
     }
 
-    #[Route('/scene/edit/{id}', name: 'app_admin_scene_edit', methods: 'PUT')]
-    public function editScene(Scene $scene, Request $request, SerializerInterface $serializer, EntityManagerInterface $manager): Response
-    {
-        $serializer->deserialize($request->getContent(),Scene::class,'json',['object_to_populate'=>$scene]);
-        $manager->flush();
 
-        return $this->json(['message'=>'scene edite',$scene],200,[],['groups'=>'scene-detail']);
-    }
+
+
 }
