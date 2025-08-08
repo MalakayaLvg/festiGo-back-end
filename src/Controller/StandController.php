@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Stand;
 use App\Repository\StandRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,5 +15,11 @@ final class StandController extends AbstractController
     public function index(StandRepository $standRepository): Response
     {
         return $this->json($standRepository->findAll(),200,[],['groups'=>'stand-detail']);
+    }
+
+    #[Route('/stand/show/{id}', name: 'app_stand_show', methods: 'GET')]
+    public function showStand(Stand $stand): Response
+    {
+        return $this->json(['data'=>$stand],200,[],['groups'=>'stand-detail']);
     }
 }

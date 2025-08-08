@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Item;
 use App\Entity\Stand;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +31,18 @@ final class StandAdminController extends AbstractController
 
         return $this->json(['message'=>'Stand supprime'],200);
     }
+
+    #[Route('/stand/{id}/add/item', name: 'app_admin_stand_add_item', methods: 'POST')]
+    public function addItemToStand(Stand $stand,Request $request, SerializerInterface $serializer, EntityManagerInterface $manager): Response
+    {
+        $item = $serializer->deserialize($request->getContent(),Item::class,'json');
+        $item->setStand($stand);
+        $manager->persist($item);
+        $manager->flush();
+
+        return $this->json(['message'=>'Item ajoute au stand',$item],201,[],['groups'=>'item-detail']);
+    }
+
 
 
 }
