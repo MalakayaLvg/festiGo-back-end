@@ -25,4 +25,22 @@ final class ArtistAdminController extends AbstractController
         return $this->json(['message'=>'Artiste cree',$artist],201,[],['groups'=>'artist-detail']);
     }
 
+    #[Route('/artist/edit/{id}', name: 'app_admin_artist_edit', methods: 'PUT')]
+    public function editArtist(Artist $artist,Request $request,SerializerInterface $serializer,EntityManagerInterface $manager): Response
+    {
+        $serializer->deserialize($request->getContent(),Artist::class,'json',['object_to_populate'=>$artist]);
+        $manager->flush();
+
+        return $this->json(['message'=>'Artiste edite',$artist],200,[],['groups'=>'artist-detail']);
+    }
+
+    #[Route('/artist/delete/{id}', name: 'app_admin_artist_delete', methods: 'DELETE')]
+    public function deleteArtist(Artist $artist, EntityManagerInterface $manager): Response
+    {
+        $manager->remove($artist);
+        $manager->flush();
+
+        return $this->json(['message'=>'Artiste supprime'],200);
+    }
+
 }
