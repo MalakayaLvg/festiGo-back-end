@@ -15,11 +15,11 @@ class Artist
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['artist-detail','slot-detail'])]
+    #[Groups(['artist-detail','slot-detail','genre-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['artist-detail','slot-detail'])]
+    #[Groups(['artist-detail','slot-detail','genre-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -37,9 +37,17 @@ class Artist
     #[Groups(['artist-detail'])]
     private Collection $slots;
 
+    /**
+     * @var Collection<int, Genre>
+     */
+    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'artists')]
+    #[Groups(['artist-detail'])]
+    private Collection $genres;
+
     public function __construct()
     {
         $this->slots = new ArrayCollection();
+        $this->genres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,6 +116,33 @@ class Artist
             if ($slot->getArtist() === $this) {
                 $slot->setArtist(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+            $genre->addArtist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        if ($this->genres->removeElement($genre)) {
+            $genre->removeArtist($this);
         }
 
         return $this;

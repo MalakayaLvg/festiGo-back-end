@@ -47,8 +47,8 @@ final class SlotAdminController extends AbstractController
         return $this->json(['message'=>'Artist bien ajouté au creneau',$slot],200,[],['groups'=>'slot-detail']);
     }
 
-    #[Route('/slot/{id}/remove/artist', name: 'app_admin_slot_remove_artist', methods: 'PUT')]
-    public function removeArtistToSlot(Slot $slot,EntityManagerInterface $manager): Response
+    #[Route('/slot/{id}/remove/artist', name: 'app_admin_slot_remove_artist', methods: 'POST')]
+    public function removeArtistFromSlot(Slot $slot,EntityManagerInterface $manager): Response
     {
         $slot->removeArtist();
         $manager->flush();
