@@ -70,10 +70,17 @@ class Festival
     #[Groups(['festival-detail'])]
     private Collection $stands;
 
+    /**
+     * @var Collection<int, Ticket>
+     */
+    #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'festival', orphanRemoval: true)]
+    private Collection $tickets;
+
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
         $this->stands = new ArrayCollection();
+        $this->tickets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -243,6 +250,36 @@ class Festival
             // set the owning side to null (unless already changed)
             if ($stand->getFestival() === $this) {
                 $stand->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ticket>
+     */
+    public function getTickets(): Collection
+    {
+        return $this->tickets;
+    }
+
+    public function addTicket(Ticket $ticket): static
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets->add($ticket);
+            $ticket->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(Ticket $ticket): static
+    {
+        if ($this->tickets->removeElement($ticket)) {
+            // set the owning side to null (unless already changed)
+            if ($ticket->getFestival() === $this) {
+                $ticket->setFestival(null);
             }
         }
 
