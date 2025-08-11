@@ -34,9 +34,18 @@ security:
             lazy: true
             provider: app_user_provider
 
+    role_hierarchy:
+        ROLE_VISITOR: ROLE_USER
+        ROLE_EMPLOYEE: ROLE_VISITOR
+        ROLE_ADMIN: [ ROLE_USER, ROLE_VISITOR, ROLE_EMPLOYEE ]
+
     access_control:
+     - { path: ^/api/register, roles: PUBLIC_ACCESS }
+     - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+     - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
      - { path: ^/api/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
+     - { path: ^/api/employee, roles: ROLE_EMPLOYEE }
+     - { path: ^/api, roles: ROLE_VISITOR }
 
 when@test:
     security:

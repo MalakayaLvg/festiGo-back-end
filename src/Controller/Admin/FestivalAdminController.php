@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Festival;
 use App\Entity\Scene;
 use App\Entity\Stand;
+use App\Entity\Visitor;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +17,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/admin')]
 final class FestivalAdminController extends AbstractController
 {
+    #[Route('/promote/employee/{id}', name: 'app_admin_promote_employee')]
+    public function promoteVisitorToEmployee(Visitor $visitor, UserService $userService): Response
+    {
+        $employee = $userService->promoteVisitorToEmployee($visitor);
+
+        return $this->json(['message'=>'Visiteur promu en employé','data'=>$employee],200,[],['user-detail']);
+    }
 
     #[Route('/festival/create', name: 'app_admin_festival_create', methods: 'POST')]
     public function createFestival(SerializerInterface $serializer, Request $request, EntityManagerInterface $manager): Response

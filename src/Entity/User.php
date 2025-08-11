@@ -11,6 +11,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string', options: ['default'=>'user'])]
+#[ORM\DiscriminatorMap([
+    'user' => User::class,
+    'visitor' => Visitor::class,
+    'employee' => Employee::class
+])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -45,6 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $verificationTokenExpiresAt = null;
+
 
     public function getId(): ?int
     {
@@ -159,4 +167,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->verificationTokenExpiresAt = $verificationTokenExpiresAt;
         return $this;
     }
+
 }

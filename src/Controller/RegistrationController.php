@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\SendEmailService;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -60,7 +61,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/api/verify-email/{token}', name: 'app_verify_email', methods: ['GET'])]
-    public function verifyEmail(string $token, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function verifyEmail(string $token, UserRepository $userRepository, EntityManagerInterface $entityManager, UserService $userService): Response
     {
         $user = $userRepository->findOneBy(['verificationToken' => $token]);
 
@@ -81,9 +82,11 @@ class RegistrationController extends AbstractController
         $user->setVerificationToken(null);
         $user->setVerificationTokenExpiresAt(null);
 
+        $visitor = $userService->promoteToVisitor($user);
+
         $entityManager->flush();
 
-        return $this->json(['message' => 'Compte vérifié avec succès ! Vous pouvez maintenant vous connecter.'], 200);
+        return $this->json(['message' => 'Compte verifie avec succes ! Vous pouvez maintenant vous connecter.','visitor'=>$visitor], 200);
     }
 
     #[Route('/api/login_check', name: 'api_login_check', methods: ['POST'])]
