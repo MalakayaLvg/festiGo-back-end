@@ -33,6 +33,7 @@ final class TicketAdminController extends AbstractController
             $ticket->setPrice($price);
             $ticket->setCreatedAt(new \DateTimeImmutable());
             $ticket->setIsValidate(false);
+            $ticket->setIsPurshase(false);
 
             $manager->persist($ticket);
             $createdTickets[] = $ticket;
@@ -45,4 +46,6 @@ final class TicketAdminController extends AbstractController
             'ticketCreated' => count($createdTickets)
             ],201);
     }
+
+
 }

@@ -17,11 +17,11 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['festival-detail','scene-detail','stand-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['festival-detail','scene-detail','stand-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
