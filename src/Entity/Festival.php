@@ -17,11 +17,11 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail','credits-formula-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail'])]
+    #[Groups(['festival-detail','scene-detail','stand-detail','ticket-detail','credits-formula-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -76,11 +76,18 @@ class Festival
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'festival', orphanRemoval: true)]
     private Collection $tickets;
 
+    /**
+     * @var Collection<int, CreditsFormula>
+     */
+    #[ORM\OneToMany(targetEntity: CreditsFormula::class, mappedBy: 'festival', orphanRemoval: true)]
+    private Collection $creditsFormulas;
+
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
         $this->stands = new ArrayCollection();
         $this->tickets = new ArrayCollection();
+        $this->creditsFormulas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -280,6 +287,36 @@ class Festival
             // set the owning side to null (unless already changed)
             if ($ticket->getFestival() === $this) {
                 $ticket->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CreditsFormula>
+     */
+    public function getCreditsFormulas(): Collection
+    {
+        return $this->creditsFormulas;
+    }
+
+    public function addCreditsFormula(CreditsFormula $creditsFormula): static
+    {
+        if (!$this->creditsFormulas->contains($creditsFormula)) {
+            $this->creditsFormulas->add($creditsFormula);
+            $creditsFormula->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreditsFormula(CreditsFormula $creditsFormula): static
+    {
+        if ($this->creditsFormulas->removeElement($creditsFormula)) {
+            // set the owning side to null (unless already changed)
+            if ($creditsFormula->getFestival() === $this) {
+                $creditsFormula->setFestival(null);
             }
         }
 

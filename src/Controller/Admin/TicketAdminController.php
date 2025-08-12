@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\CreditsFormula;
 use App\Entity\Festival;
 use App\Entity\Ticket;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/admin')]
 final class TicketAdminController extends AbstractController
@@ -46,6 +49,7 @@ final class TicketAdminController extends AbstractController
             'ticketCreated' => count($createdTickets)
             ],201);
     }
+
 
 
 }
