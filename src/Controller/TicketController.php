@@ -9,6 +9,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\OpenSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+
 #[Route('/api')]
 final class TicketController extends AbstractController
 {
@@ -46,6 +54,8 @@ final class TicketController extends AbstractController
 
         return $this->json(['message'=>'Ticket acheter avec success','data'=>$ticket],200,[],['groups'=>'ticket-detail']);
     }
+
+
 
 
 }
