@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section>
+        <p>Forgot to add something to your cart? Shop around then come back to pay!</p>
+        <a class="btn btn-primary" href="{{ path('app_payment_checkout') }}">Retour</a>
+    </section>
+
+{% endblock %}

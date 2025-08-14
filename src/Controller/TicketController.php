@@ -46,4 +46,6 @@ final class TicketController extends AbstractController
 
         return $this->json(['message'=>'Ticket acheter avec success','data'=>$ticket],200,[],['groups'=>'ticket-detail']);
     }
+
+
 }
