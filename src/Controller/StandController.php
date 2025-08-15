@@ -22,4 +22,10 @@ final class StandController extends AbstractController
     {
         return $this->json(['data'=>$stand],200,[],['groups'=>'stand-detail']);
     }
+
+    #[Route('/stand/{id}/show/items', name: 'app_stand_show_items', methods: 'GET')]
+    public function showStandItems(Stand $stand): Response
+    {
+        return $this->json(['data'=>$stand->getItems()],200,[],['groups'=>'item-detail']);
+    }
 }

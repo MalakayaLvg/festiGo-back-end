@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api')]
 final class ItemController extends AbstractController
 {
+
     #[Route('/item/show/{id}', name: 'app_item_show', methods: 'GET')]
     public function showItem(Item $item): Response
     {

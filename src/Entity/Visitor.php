@@ -21,10 +21,17 @@ class Visitor extends User
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'visitor')]
     private Collection $tickets;
 
+    /**
+     * @var Collection<int, CreditsPayment>
+     */
+    #[ORM\OneToMany(targetEntity: CreditsPayment::class, mappedBy: 'visitor')]
+    private Collection $creditsPayments;
+
     public function __construct()
     {
         $this->creditsBalance = 0;
         $this->tickets = new ArrayCollection();
+        $this->creditsPayments = new ArrayCollection();
     }
 
     public function getCreditsBalance(): ?int
@@ -63,6 +70,36 @@ class Visitor extends User
             // set the owning side to null (unless already changed)
             if ($ticket->getVisitor() === $this) {
                 $ticket->setVisitor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CreditsPayment>
+     */
+    public function getCreditsPayments(): Collection
+    {
+        return $this->creditsPayments;
+    }
+
+    public function addCreditsPayment(CreditsPayment $creditsPayment): static
+    {
+        if (!$this->creditsPayments->contains($creditsPayment)) {
+            $this->creditsPayments->add($creditsPayment);
+            $creditsPayment->setVisitor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreditsPayment(CreditsPayment $creditsPayment): static
+    {
+        if ($this->creditsPayments->removeElement($creditsPayment)) {
+            // set the owning side to null (unless already changed)
+            if ($creditsPayment->getVisitor() === $this) {
+                $creditsPayment->setVisitor(null);
             }
         }
 

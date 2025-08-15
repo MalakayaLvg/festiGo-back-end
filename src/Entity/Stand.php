@@ -15,11 +15,11 @@ class Stand
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['stand-detail','festival-detail','item-detail'])]
+    #[Groups(['stand-detail','festival-detail','item-detail','order-detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['stand-detail','festival-detail','item-detail'])]
+    #[Groups(['stand-detail','festival-detail','item-detail','order-detail'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
