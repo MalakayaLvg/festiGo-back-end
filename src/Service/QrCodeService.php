@@ -14,26 +14,21 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class QrCodeService
 {
-    public function generateQrCode(): Response
+    public function generateQrCode($data): string
     {
         $builder = new Builder(
             writer: new PngWriter(),
             writerOptions: [],
             validateResult: false,
-            data: 'Custom QR code contents',
+            data: $data,
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::High,
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            labelText: 'This is the label',
-            labelFont: new OpenSans(20),
-            labelAlignment: LabelAlignment::Center,
-            logoPath: __DIR__.'/assets/bender.png',
-            logoResizeToWidth: 50,
-            logoPunchoutBackground: true
         );
 
         $result = $builder->build();
+        return base64_encode($result->getString());
     }
 }

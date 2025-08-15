@@ -16,7 +16,7 @@ class Ticket
     #[Groups(['ticket-detail'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     #[Groups(['ticket-detail'])]
     private ?string $qrCode = null;
 
